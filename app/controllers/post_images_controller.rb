@@ -7,6 +7,11 @@ class PostImagesController < ApplicationController
     @post_image = PostImage.new(post_image_params)
     @post_image.user_id = current_user.id
     if @post_image.save
+      # 以下4行追加（11-14行目まで）
+      tags = Vision.get_image_data(@post_image.image)
+      tags.each do |tag|
+        @post_image.tags.create(name: tag)
+      end
       redirect_to post_images_path
     else
       render :new
